@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-paper: #f6f4ee;
+  --color-ink: #1a1917;
+  --color-muted: #7a776d;
+  --color-line: #e2ded2;
+  --color-line-strong: #c9c4b4;
+
+  --font-display: var(--font-display-loaded), "Iowan Old Style", ui-serif, serif;
+  --font-sans: var(--font-sans-loaded), ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --color-paper: #141311;
+  --color-ink: #f2efe6;
+  --color-muted: #948f81;
+  --color-line: #2b2924;
+  --color-line-strong: #423f37;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 999px;
+  border: 3px solid var(--color-paper);
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+[data-theme="dark"] .grain-overlay {
+  opacity: 0.06;
+  mix-blend-mode: screen;
+}
+
+.line-clip {
+  display: block;
+  overflow: hidden;
+}
+.line-clip > span {
+  display: block;
+  transform: translateY(105%);
+  animation: line-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes line-up {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-in-delayed {
+  opacity: 0;
+  animation: fade-in 0.8s ease forwards;
+}
+
+.ink-link {
+  position: relative;
+  text-decoration: none;
+}
+.ink-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ink-link:hover::after,
+.ink-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-clip > span {
+    animation: none;
+    transform: translateY(0);
+  }
+  .fade-in-delayed {
+    animation: none;
+    opacity: 1;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
