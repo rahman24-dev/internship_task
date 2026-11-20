@@ -1,71 +1,69 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 const links = [
-  { href: '#work', label: 'Work' },
   { href: '#services', label: 'Services' },
+  { href: '#work', label: 'Work' },
   { href: '#contact', label: 'Contact' },
 ];
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <header
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 bg-paper/90 backdrop-blur ${
-        scrolled ? 'border-line' : 'border-transparent'
-      }`}
-    >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <a href="#top" className="font-display text-xl italic lowercase tracking-tight">
-          Logic Loop<span aria-hidden="true">.</span>
-        </a>
+    <header className="sticky top-0 z-40 border-b border-line bg-page/90 backdrop-blur">
+      <div className="px-6">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
+          <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight">
+            <span
+              aria-hidden="true"
+              className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-sm font-bold text-on-accent"
+            >
+              L
+            </span>
+            Logic Loop
+          </a>
 
-        <nav className="hidden items-center gap-8 text-sm sm:flex">
-          {links.map((link) => (
-            <a key={link.href} href={link.href} className="ink-link text-ink/80 hover:text-ink">
-              {link.label}
+          <nav aria-label="Main" className="hidden items-center gap-8 text-sm md:flex">
+            {links.map((link) => (
+              <a key={link.href} href={link.href} className="text-muted transition-colors hover:text-fg">
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <a
+              href="#contact"
+              className="hidden rounded-md bg-accent px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-hover md:inline-flex"
+            >
+              Get in touch
             </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            className="flex h-8 w-8 flex-col items-center justify-center gap-1.5 sm:hidden"
-          >
-            <span
-              className={`block h-px w-5 bg-ink transition-transform duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`}
-            />
-            <span
-              className={`block h-px w-5 bg-ink transition-transform duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`}
-            />
-          </button>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              aria-expanded={open}
+              className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-line text-muted md:hidden"
+            >
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </div>
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-line px-6 py-4 sm:hidden">
+        <nav aria-label="Mobile" className="border-t border-line bg-page px-6 py-3 md:hidden">
           {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm text-ink/80"
+              className="block py-2.5 text-sm text-muted hover:text-fg"
             >
               {link.label}
             </a>

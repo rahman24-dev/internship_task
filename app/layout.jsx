@@ -1,32 +1,17 @@
-import { Inter, Fraunces } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import './globals.css';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans-loaded',
-  display: 'swap',
-});
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  variable: '--font-display-loaded',
-  display: 'swap',
-  axes: ['opsz', 'SOFT'],
-});
-
 export const metadata = {
-  title: 'Logic Loop — an independent design studio',
+  title: 'Logic Loop — Design & development studio',
   description:
-    'Logic Loop is a small design studio building interfaces, brands and websites for teams who care about the details.',
+    'Logic Loop is a small design studio in Chennai building websites, brands and product interfaces.',
 };
-
 
 const themeInitScript = `
 (function () {
   try {
-    var stored = localStorage.getItem('lumina-theme');
+    var stored = localStorage.getItem('logic-loop-theme');
     var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', theme);
   } catch (e) {}
@@ -35,17 +20,19 @@ const themeInitScript = `
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body
-        className={`${inter.variable} ${fraunces.variable} antialiased min-h-screen`}
-        suppressHydrationWarning
-      >
-        <div className="grain-overlay" aria-hidden="true" />
+      <body className="min-h-screen bg-page text-fg antialiased" suppressHydrationWarning>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:text-on-accent"
+        >
+          Skip to content
+        </a>
         <Header />
-        {children}
+        <main id="main">{children}</main>
         <Footer />
       </body>
     </html>

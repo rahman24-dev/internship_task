@@ -1,138 +1,141 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
-import MagneticButton from './MagneticButton';
+import { Mail, MapPin, CheckCircle2 } from 'lucide-react';
 
-const projectTypes = ['a new website', 'a brand identity', 'a product interface', 'something else'];
+const projectTypes = ['Website', 'Brand identity', 'Product / app interface', 'Something else'];
+
+const initialForm = { name: '', email: '', type: projectTypes[0], message: '' };
+
+const fieldClass =
+  'mt-1.5 w-full rounded-md border border-line bg-page px-3 py-2.5 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30';
 
 export default function Contact() {
+  const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState('idle'); 
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    type: projectTypes[0],
-    message: '',
-  });
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setStatus('sending');
-    // In production this posts to your form handler / API route.
     setTimeout(() => setStatus('sent'), 700);
   };
 
+  const reset = () => {
+    setForm(initialForm);
+    setStatus('idle');
+  };
+
   return (
-    <section id="contact" className="px-6 py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
-        {/* Left: direct info */}
-        <div className="lg:col-span-4">
-          <h2 className="font-display text-4xl font-light sm:text-5xl">Let’s talk.</h2>
-          <p className="mt-4 max-w-xs text-ink/70">
-            Tell us a bit about the project below, or reach out directly — we read
-            everything ourselves.
+    <section id="contact" className="border-t border-line bg-surface px-6 py-20 sm:py-24">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Let’s talk</h2>
+          <p className="mt-3 text-muted">
+            Tell us about your project and we’ll get back to you within two working days.
           </p>
 
-          <div className="mt-10 space-y-4 text-sm">
-            <a href="mailto:studio@lumina.design" className="ink-link inline-flex items-center gap-1.5">
-              studio@lumina.design
-              <ArrowUpRight size={14} className="text-muted" />
-            </a>
-            <div className="flex gap-5 pt-2 text-muted">
-              <a href="https://instagram.com" className="ink-link hover:text-ink">
-                Instagram
+          <ul className="mt-8 space-y-4 text-sm">
+            <li className="flex items-center gap-3">
+              <Mail size={18} className="text-accent" />
+              <a href="mailto:hello@logicloop.design" className="hover:underline">
+                hello@logicloop.design
               </a>
-              <a href="https://linkedin.com" className="ink-link hover:text-ink">
-                LinkedIn
-              </a>
-            </div>
-          </div>
-
-          <p className="mt-10 border-t border-line pt-6 text-sm text-muted">
-            Chennai, India
-            <br />
-            Currently booking for Q1 2027.
-          </p>
+            </li>
+            <li className="flex items-center gap-3">
+              <MapPin size={18} className="text-accent" />
+              <span>Chennai, India</span>
+            </li>
+          </ul>
         </div>
 
-        {/* Right: sentence-style form */}
-        <div className="lg:col-span-8">
+        <div className="rounded-xl border border-line bg-page p-6 sm:p-8 lg:col-span-3">
           {status === 'sent' ? (
-            <div className="flex min-h-64 flex-col justify-center border-t border-line pt-10">
-              <h3 className="font-display text-3xl font-light">Got it, thank you.</h3>
-              <p className="mt-3 max-w-sm text-ink/70">
-                We reply to every message within two working days. Keep an eye on{' '}
-                {form.email || 'your inbox'}.
+            <div role="status" className="flex min-h-72 flex-col items-center justify-center text-center">
+              <CheckCircle2 size={40} className="text-accent" />
+              <h3 className="mt-4 text-xl font-semibold">Message sent</h3>
+              <p className="mt-2 max-w-sm text-muted">
+                Thanks{form.name ? `, ${form.name.split(' ')[0]}` : ''}. We’ll reply to {form.email} soon.
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setStatus('idle');
-                  setForm({ name: '', email: '', type: projectTypes[0], message: '' });
-                }}
-                className="ink-link mt-6 w-fit text-sm font-medium"
+                onClick={reset}
+                className="mt-6 cursor-pointer text-sm font-medium text-accent hover:underline"
               >
                 Send another message
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="border-t border-line pt-10">
-              <div className="font-display flex flex-wrap items-baseline gap-x-2 gap-y-4 text-2xl leading-relaxed font-light sm:text-3xl">
-                <span>Hi, I’m</span>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={update('name')}
-                  placeholder="your name"
-                  className="min-w-0 flex-1 basis-40 border-b border-line-strong bg-transparent placeholder-ink/30 outline-none focus:border-ink"
-                />
-                <span>. You can reach me at</span>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={update('email')}
-                  placeholder="you@email.com"
-                  className="min-w-0 flex-1 basis-56 border-b border-line-strong bg-transparent placeholder-ink/30 outline-none focus:border-ink"
-                />
-                <span>. I’m thinking about</span>
-                <select
-                  value={form.type}
-                  onChange={update('type')}
-                  className="border-b border-line-strong bg-transparent outline-none focus:border-ink"
-                >
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    autoComplete="name"
+                    value={form.name}
+                    onChange={update('name')}
+                    placeholder="Abdur Rahman"
+                    className={fieldClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={update('email')}
+                    placeholder="rahman@company.com"
+                    className={fieldClass}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="type" className="text-sm font-medium">
+                  What do you need?
+                </label>
+                <select id="type" value={form.type} onChange={update('type')} className={fieldClass}>
                   {projectTypes.map((t) => (
-                    <option key={t} value={t} className="bg-paper text-ink">
+                    <option key={t} value={t}>
                       {t}
                     </option>
                   ))}
                 </select>
-                <span>.</span>
               </div>
 
-              <label className="mt-10 block text-sm text-muted" htmlFor="message">
-                Anything else that would help us prepare?
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                value={form.message}
-                onChange={update('message')}
-                placeholder="Budget, timeline, links to things you like — whatever's useful."
-                className="mt-2 w-full resize-none border-b border-line-strong bg-transparent py-2 text-ink placeholder-ink/30 outline-none focus:border-ink"
-              />
+              <div>
+                <label htmlFor="message" className="text-sm font-medium">
+                  Project details
+                </label>
+                <textarea
+                  id="message"
+                  rows={5}
+                  required
+                  value={form.message}
+                  onChange={update('message')}
+                  placeholder="Goals, timeline, budget, links to references…"
+                  className={`${fieldClass} resize-none`}
+                />
+              </div>
 
-              <MagneticButton
-                as="button"
+              <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="mt-8 rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper disabled:opacity-60"
+                className="w-full cursor-pointer rounded-md bg-accent px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
-                {status === 'sending' ? 'Sending…' : 'Send this'}
-              </MagneticButton>
+                {status === 'sending' ? 'Sending…' : 'Send message'}
+              </button>
             </form>
           )}
         </div>

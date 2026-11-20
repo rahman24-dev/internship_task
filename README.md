@@ -1,64 +1,80 @@
-# Logic Loop — design agency site
+# Logic Loop — Design Agency Website
 
-A single-page site for a small design studio, built with Next.js and Tailwind CSS. Black-and-white editorial theme, light/dark toggle, and a redesigned portfolio, hero, and contact section.
+A responsive, single-page website for a small design and development studio. It covers the sections a studio site typically needs: services, selected work and a contact form. It includes a light/dark theme and is built to be fast, accessible and easy to maintain.
 
-## Note on AI assistance
+## Features
 
-I used Claude (Anthropic) to help speed up parts of this project — mainly restyling the components, writing the light/dark theme logic, and drafting this README. I reviewed and adjusted the output myself rather than using it as-is. Flagging this for transparency since it's part of an assignment.
+- **Responsive layout** — designed mobile-first; tested at phone, tablet and desktop widths.
+- **Light and dark mode** — follows the visitor's system setting on first visit, can be toggled manually, and the choice is remembered. A small inline script applies the theme before first paint, so there is no flash of the wrong theme.
+- **Sections** — Hero, Services, Selected Work (portfolio) and Contact, with a sticky header and mobile menu.
+- **Contact form** — labelled fields, built-in browser validation, loading and success states.
+- **Accessibility** — semantic HTML, a skip-to-content link, visible focus states, descriptive image alt text, `aria-label`s on icon buttons, and support for `prefers-reduced-motion`.
+- **Optimised images** — project images are served through `next/image`.
 
 ## Tech stack
 
-- [Next.js](https://nextjs.org) 16 (App Router)
-- React 19
-- Tailwind CSS v4
-- [lucide-react](https://lucide.dev) for icons
+| Area      | Choice                                    |
+| --------- | ----------------------------------------- |
+| Framework | [Next.js](https://nextjs.org) 16 (App Router) |
+| UI        | React 19                                  |
+| Styling   | Tailwind CSS v4                           |
+| Icons     | [lucide-react](https://lucide.dev)        |
+| Fonts     | System font stack (no external requests)  |
 
 ## Getting started
+
+Requires Node.js 20 or newer.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it. The page auto-updates as you edit files.
+Open [http://localhost:3000](http://localhost:3000).
 
-To build for production:
-
-```bash
-npm run build
-npm start
-```
+| Command         | What it does                      |
+| --------------- | --------------------------------- |
+| `npm run dev`   | Start the development server      |
+| `npm run build` | Create a production build         |
+| `npm start`     | Serve the production build        |
+| `npm run lint`  | Run ESLint                        |
 
 ## Project structure
 
 ```
 app/
-  layout.jsx      Root layout — fonts, metadata, theme-flash prevention script
-  page.jsx         Composes the sections below
-  globals.css       Design tokens (colors, fonts), animations, grain overlay
+  layout.jsx        Root layout, metadata, theme initialisation script
+  page.jsx          Composes the page sections
+  globals.css       Design tokens (colours, fonts) and base styles
 components/
-  Header.jsx       Nav bar with logo, links, theme toggle, mobile menu
-  Hero.jsx         Landing headline with line-reveal animation
-  Services.jsx     Studio's four core services, as a divided list
-  Portfolio.jsx    Selected work, alternating image/text rows
-  Contact.jsx      Sentence-style contact form + direct contact info
-  Footer.jsx       Simple footer
-  ThemeToggle.jsx   Light/dark switch, persisted to localStorage
-  MagneticButton.jsx Reusable hover effect for primary buttons/links
+  Header.jsx        Sticky navigation, theme toggle, mobile menu
+  Hero.jsx          Headline, call to action, key facts
+  Services.jsx      Service cards
+  Portfolio.jsx     Project cards
+  Contact.jsx       Contact details and enquiry form
+  Footer.jsx        Footer
+  ThemeToggle.jsx   Light/dark switch, persisted in localStorage
 ```
 
-## Design notes
+## Design decisions
 
-- **Color** — a warm off-black (`#1a1917`) and off-white (`#f6f4ee`) rather than pure black/white, defined once as CSS variables in `globals.css` and swapped via a `data-theme` attribute on `<html>`.
-- **Type** — Fraunces (serif, for headings) paired with Inter (sans, for body/UI text), loaded through `next/font/google`.
-- **Theme toggle** — an inline script in `layout.jsx` sets the theme before the page paints, so there's no flash of the wrong theme on load. The toggle itself lives in `ThemeToggle.jsx` and saves the choice to `localStorage`.
-- **Motion** — kept deliberately minimal: one line-reveal animation on the hero when the page loads, plus hover states (image zoom, underline links, magnetic buttons) that only respond to user interaction. All motion respects `prefers-reduced-motion`.
+- **Simple, consistent system.** One typeface family, one accent colour (blue), neutral slate greys, and a small set of reusable patterns (cards, buttons, section headings). Nothing is decorative without a reason.
+- **Tokens, not hard-coded colours.** All colours are CSS variables defined once in `app/globals.css` and exposed as Tailwind utilities (`bg-page`, `text-muted`, `border-line`, `bg-accent`, and so on). Dark mode only redefines those variables, so components contain no `dark:` overrides.
+- **Readable first.** Strong contrast in both themes, generous spacing, and a comfortable line length for body copy.
+- **Minimal motion.** Only subtle hover and colour transitions, and they are disabled for visitors who prefer reduced motion.
+- **No third-party font requests.** Using the system font stack keeps pages fast and avoids a network dependency at build time.
 
-## Known limitation in this environment
+## Customising
 
-This was developed in a sandboxed environment without access to `fonts.googleapis.com`, so the production build couldn't fully verify the Google Fonts fetch there. This resolves automatically with a normal internet connection — `next/font/google` fetches and self-hosts the font files at build time.
+- **Brand colours** — edit the variables at the top of `app/globals.css`.
+- **Copy and content** — services are defined in `components/Services.jsx` and projects in `components/Portfolio.jsx`; both are plain arrays at the top of the file.
+- **Images** — project images are loaded from Unsplash. If you use another host, add it to `images.remotePatterns` in `next.config.mjs`.
 
-## Learn more
+## Limitations
 
-- [Next.js documentation](https://nextjs.org/docs)
-- [Tailwind CSS documentation](https://tailwindcss.com/docs)
+- **The contact form is a front-end demo.** It validates input and shows a success state, but does not send the message anywhere. To make it live, replace the `setTimeout` in `components/Contact.jsx` with a `fetch()` call to an API route or a form service.
+- **Content is placeholder.** The studio name, projects, email address and figures are sample content for demonstration.
+
+## AI assistance
+
+I used Claude (Anthropic) as a coding assistant on this project, mainly for refining the UI and for drafting this README. I reviewed the result and can explain how any part of it works.
